@@ -4,7 +4,15 @@
   {% include head.html %}
 
   <body>
-
+    <div class="container-fluid">
+      <div class="row">
+       <div class="col-sm-12 text-left">
+         <h3>Select Position:</h3>
+         <div id="positionList" class="text-left">
+           <!-- Checkbox list will be dynamically generated here -->
+         </div>
+       </div>
+     </div>
     <div class="container-fluid">
       <div class="row">
         {{ content }}
@@ -13,7 +21,50 @@
   
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="{{ site.url }}{{ site.baseurl }}/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="{{ site.url }}{{ site.baseurl }}/js/bootstrap.min.js"></script>
 
-  </body>
+    <script>
+      $(document).ready(function() {
+        // Function to populate the checkbox list with available positions
+       function populatePositionList() {
+      var positions = {};
+      $('.person').each(function() {
+          var memberPosition = $(this).find('.position').text().trim().split(',')[0];
+          if (!(memberPosition in positions)) {
+              positions[memberPosition] = false;
+              $('#positionList').append('<input type="checkbox" name="position" value="' + memberPosition + '"> ' + memberPosition + '<br>');
+          }
+      });
+  }
+  
+  
+        // Function to filter members based on the selected positions
+        function filterMembersByPosition(positions) {
+      $('.person').each(function() {
+          var memberPosition = $(this).find('.position').text().trim().split(',')[0];
+          if (Object.keys(positions).length === 0 || positions[memberPosition]) {
+              $(this).show();
+          } else {
+              $(this).hide();
+          }
+      });
+  }
+  
+  
+        // Initial population of the position list
+        populatePositionList();
+    // Event listener for checkbox change
+    $('input[type=checkbox][name=position]').change(function() {
+      var selectedPositions = {};
+      $('input[type=checkbox][name=position]:checked').each(function() {
+        var position = $(this).val();
+        selectedPositions[position] = true;
+      });
+      filterMembersByPosition(selectedPositions);
+    });
+  });
+</script>
+</body>
 
 </html>
